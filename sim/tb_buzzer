@@ -1,0 +1,32 @@
+`timescale 1ns/1ps
+
+module tb_buzzer;
+
+    reg clk_100mhz = 0;
+    reg rst = 1;
+    reg [1:0] mode = 2'b00;
+    wire buzzer_out;
+
+    // DUT
+    buzzer_top dut (
+        .clk_100mhz(clk_100mhz),
+        .rst(rst),
+        .mode(mode),
+        .buzzer_out(buzzer_out)
+    );
+
+    // 100 MHz clock (10 ns period)
+    always #5 clk_100mhz = ~clk_100mhz;
+
+    initial begin
+        #100 rst = 0;
+
+        #5_000_000 mode = 2'b01; // 800 Hz
+        #5_000_000 mode = 2'b10; // 2 kHz
+        #5_000_000 mode = 2'b11; // 4 kHz
+        #5_000_000 mode = 2'b00; // OFF
+
+        #5_000_000 $stop;
+    end
+
+endmodule
